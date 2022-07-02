@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 *.png
 log.txt
+*.ogg
+*.mp3
+*.wav

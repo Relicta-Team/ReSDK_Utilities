@@ -2,12 +2,13 @@ from pathlib import Path
 import sys
 import os
 from common import *
+from pydub import AudioSegment 
 
 VERSION = "0.1"
 TITLE = f'Relicta Audio Converter v{VERSION}\nCreated by Astra'
 LOGGER_FILE = "log.txt"
 OUTPUT_FOLDER = "audio_output"
-FILE_REG = ["*.wav",".mp3",]
+FILE_REG = ["*.wav","*.mp3",]
 
 def main():
     to_convert = sys.argv[1]
@@ -40,7 +41,12 @@ def main():
         rel = p.relative_to(to_convert)
         save_path = os.path.join(to_output,rel)    
         MakeDirsIfNotExist(save_path)
-
+        pathname, extension = os.path.splitext(save_path)
+        segment = AudioSegment.from_file(path,format=extension[1:])
+        segment = segment.set_channels(1)
+        segment.export(os.path.join(pathname + ".ogg"),format='ogg')
+        i += 1
+        DrawProgress(TITLE, i, len(paths), 40, errors)
     DrawComplete()
 
 if __name__ == '__main__':
