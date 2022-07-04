@@ -4,7 +4,7 @@ import os
 from common import *
 from pydub import AudioSegment 
 
-VERSION = "0.1"
+VERSION = "0.11"
 TITLE = f'Relicta Audio Converter v{VERSION}\nCreated by Astra'
 LOGGER_FILE = "log.txt"
 OUTPUT_FOLDER = "audio_output"
@@ -19,9 +19,10 @@ def main():
         return
 
     # path collection
+    working_dir = os.path.dirname(os.path.realpath(__file__))
     root = os.path.dirname(to_convert)
     logger = os.path.join(root,LOGGER_FILE)
-    to_output = os.path.join(root,OUTPUT_FOLDER)
+    to_output = os.path.join(working_dir,OUTPUT_FOLDER)
     paths = CollectFilePaths(to_convert,FILE_REG)
 
     # delete logger if exists
@@ -40,8 +41,9 @@ def main():
         p = Path(path)
         rel = p.relative_to(to_convert)
         save_path = os.path.join(to_output,rel)    
-        MakeDirsIfNotExist(save_path)
         pathname, extension = os.path.splitext(save_path)
+        pathname = FilterFileName(pathname,'()\",\'')
+        MakeDirsIfNotExist(pathname)
         segment = AudioSegment.from_file(path,format=extension[1:])
         segment = segment.set_channels(1)
         segment.export(os.path.join(pathname + ".ogg"),format='ogg')

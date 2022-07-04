@@ -1,5 +1,6 @@
 from fnmatch import fnmatch
 import math
+import string
 import os
 clear = lambda: os.system('cls')
 
@@ -42,3 +43,11 @@ def WriteToLog(file, msg):
     f.write(msg)
     f.close()
     return
+
+def DeleteCharactersFromString(str,symbols):
+    return str.translate({ord(i):None for i in symbols})
+
+def FilterFileName(str,symbols):
+    name = os.path.basename(str)
+    name = DeleteCharactersFromString(name,symbols)
+    return os.path.join(os.path.dirname(str),name)
