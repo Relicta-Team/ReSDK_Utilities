@@ -4,7 +4,7 @@ import os
 from common import *
 from pydub import AudioSegment 
 
-VERSION = "0.11"
+VERSION = "0.12"
 TITLE = f'Relicta Audio Converter v{VERSION}\nCreated by Astra'
 LOGGER_FILE = "log.txt"
 OUTPUT_FOLDER = "audio_output"
@@ -19,10 +19,13 @@ def main():
         return
 
     # path collection
-    working_dir = os.path.dirname(os.path.realpath(__file__))
+    if getattr(sys, 'frozen', False):
+        application_path = os.path.dirname(sys.executable)
+    elif __file__:
+        application_path = os.path.dirname(__file__)
     root = os.path.dirname(to_convert)
     logger = os.path.join(root,LOGGER_FILE)
-    to_output = os.path.join(working_dir,OUTPUT_FOLDER)
+    to_output = os.path.join(application_path,OUTPUT_FOLDER)
     paths = CollectFilePaths(to_convert,FILE_REG)
 
     # delete logger if exists

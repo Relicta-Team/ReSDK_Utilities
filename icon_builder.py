@@ -8,7 +8,7 @@ from common import *
 GREEN_RANGE_MIN_HSV = (90, 80, 70)
 GREEN_RANGE_MAX_HSV = (180, 255, 255)
 ALPHA = (0,0,0,0)
-VERSION = "0.12"
+VERSION = "0.13"
 TITLE = f'Relicta Icon Builder v{VERSION}\nCreated by Astra'
 LOGGER_FILE = "log.txt"
 OUTPUT_FOLDER = "icon_output"
@@ -72,10 +72,13 @@ def main():
         return
 
     # path collection
-    working_dir = os.path.dirname(os.path.realpath(__file__))
+    if getattr(sys, 'frozen', False):
+        application_path = os.path.dirname(sys.executable)
+    elif __file__:
+        application_path = os.path.dirname(__file__)
     root = os.path.dirname(to_convert)
     logger = os.path.join(root,LOGGER_FILE)
-    to_output = os.path.join(working_dir,OUTPUT_FOLDER)
+    to_output = os.path.join(application_path,OUTPUT_FOLDER)
     paths = CollectFilePaths(to_convert,FILE_REG)
 
     # delete logger if exists
