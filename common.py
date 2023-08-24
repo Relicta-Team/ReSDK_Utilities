@@ -15,7 +15,7 @@ def DrawProgress(title, current, total, partitions, errors):
 
 def DrawComplete():
     print("Complete!")
-    input("You can exit now.")
+    print("You can exit now.")
 
 def CollectFilePaths(root, pattern_arr = ["*.*"]):
     list = []

@@ -1,3 +1,4 @@
+from time import sleep
 from PIL import Image
 from PIL import ImageOps
 from pathlib import Path
@@ -8,8 +9,8 @@ from common import *
 GREEN_RANGE_MIN_HSV = (90, 80, 70)
 GREEN_RANGE_MAX_HSV = (180, 255, 255)
 ALPHA = (0,0,0,0)
-VERSION = "0.13"
-TITLE = f'Relicta Icon Builder v{VERSION}\nCreated by Astra'
+VERSION = "0.13-path-1"
+TITLE = f'Relicta Icon Builder v{VERSION}\nCreated by Astra (path by Yodes)'
 LOGGER_FILE = "log.txt"
 OUTPUT_FOLDER = "icon_output"
 FILE_REG = ["*.png"]
@@ -64,12 +65,20 @@ def ProcessImage(image):
     return image.crop((left,top,right,bottom))   
     
 def main():
-    to_convert = sys.argv[1]
+    if len(sys.argv) == 1:
+        return -999
 
+    to_convert = sys.argv[1]
+    autosize = False
+    paramsize = 0
+    if len(sys.argv) == 3:
+        autosize = True
+        paramsize = int(sys.argv[2])
+        print(f"Autosize enabled; size set to {paramsize}")
     # check for path
     if not IsPathExists(to_convert):
-        input("Error. This path doesn't exist.")
-        return
+        print("Error. This path doesn't exist.")
+        return -5
 
     # path collection
     if getattr(sys, 'frozen', False):
@@ -86,19 +95,25 @@ def main():
 
     # check if folder contains images
     if(len(paths) == 0):
-        input(f'Error. This folder doesn\'t contain {FILE_REG} files.')
-        return
+        print(f'Error. This folder doesn\'t contain {FILE_REG} files.')
+        return -1
 
-    # resizing options    
-    to_size = input("Enter size to which to resize images inbetween steps. Improves accuracy (default=600)\n")
-    if not to_size.isnumeric():
-        to_size = 600
+    # resizing options
+    to_size = 600
+    if autosize:
+        to_size = paramsize
     else:
-        to_size = int(to_size)
+        to_size = input("Enter size to which to resize images inbetween steps. Improves accuracy (default=600)\n")
+        if not to_size.isnumeric():
+            to_size = 600
+        else:
+            to_size = int(to_size)
 
     # process images
     i = 0
     errors = 0
+    print("Start processing images...")
+    sleep(3)
     DrawProgress(TITLE, i, len(paths), 40, errors)
     for path in paths:
         p = Path(path)
@@ -126,7 +141,10 @@ def main():
             im.save(save_path)
             i += 1
             DrawProgress(TITLE, i, len(paths), 40, errors)    
+    
     DrawComplete()
+    
+    return 0
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
